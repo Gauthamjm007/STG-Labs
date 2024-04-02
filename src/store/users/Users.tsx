@@ -5,7 +5,7 @@ import Container from "@mui/material/Container";
 export const Users = () => {
   return (
     <Container maxWidth="md">
-      <Typography variant="h6" py={2}>
+      <Typography variant="h5" gutterBottom py={2}>
         Users
       </Typography>
       <UsersTable />

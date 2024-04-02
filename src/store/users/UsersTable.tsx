@@ -17,12 +17,13 @@ import {
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
-import { useGetUsersQuery } from "./usersApiSlice";
+import { useDeleteUsersMutation, useGetUsersQuery } from "./usersApiSlice";
 import { capitalize } from "lodash";
 import Avatar from "@mui/material/Avatar";
 
 export default function UsersTable() {
-  const { data, isLoading } = useGetUsersQuery(100);
+  const { data, isLoading, isSuccess } = useGetUsersQuery(100);
+  const [deleteUser] = useDeleteUsersMutation();
 
   const rows = useMemo(() => {
     return data?.map(({ id, name, hobby, location, avatar, createdAt }) => {
@@ -58,8 +59,8 @@ export default function UsersTable() {
 
   //   const handleDeleteClick = (id: GridRowId) => () => {
   const handleDeleteClick = (id: GridRowId) => () => {
-    console.log(id, "id");
-    // setRows(rows.filter((row) => row.id !== id));
+    id = String(id);
+    deleteUser(id);
   };
 
   const handleCancelClick = (id: GridRowId) => () => {
@@ -190,30 +191,32 @@ export default function UsersTable() {
       },
     },
   ];
-
-  return (
-    <Box
-      sx={{
-        height: 600,
-        width: "100%",
-        "& .actions": {
-          color: "text.secondary",
-        },
-        "& .textPrimary": {
-          color: "text.primary",
-        },
-      }}
-    >
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        loading={isLoading}
-      />
-    </Box>
-  );
+  if (isSuccess) {
+    return (
+      <Box
+        sx={{
+          height: 600,
+          width: "100%",
+          "& .actions": {
+            color: "text.secondary",
+          },
+          "& .textPrimary": {
+            color: "text.primary",
+          },
+        }}
+      >
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          editMode="row"
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          onRowEditStop={handleRowEditStop}
+          processRowUpdate={processRowUpdate}
+          loading={isLoading}
+        />
+      </Box>
+    );
+  }
+  return null;
 }

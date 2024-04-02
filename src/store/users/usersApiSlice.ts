@@ -27,10 +27,45 @@ export const usersApiSlice = createApi({
   tagTypes: ["Users"],
   endpoints: (build) => ({
     getUsers: build.query<UsersApiResponse[], number>({
-      query: (page = 1) => `?page=${page}`,
-      providesTags: (result, error, id) => [{ type: "Users", id }],
+      query: () => ``,
+      providesTags: (result = []) => [
+        "Users",
+        ...result.map(({ id }) => ({ type: "Users", id } as const)),
+      ],
+    }),
+    getUser: build.query<UsersApiResponse, number>({
+      query: (userId = 1) => `/${userId}`,
+      providesTags: (result, error, arg) => [{ type: "Users", id: arg }],
+    }),
+    addUsers: build.mutation<UsersApiResponse, UsersApiResponse>({
+      query: (data) => ({
+        url: "",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Users"],
+    }),
+    deleteUsers: build.mutation<UsersApiResponse, string>({
+      query: (userId) => ({
+        url: `/${userId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: "Users", id: arg }],
+    }),
+    updateUsers: build.mutation<UsersApiResponse, UsersApiResponse>({
+      query: (data) => ({
+        url: `/${data.id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: "Users", id: arg.id }],
     }),
   }),
 });
 
-export const { useGetUsersQuery } = usersApiSlice;
+export const {
+  useGetUsersQuery,
+  useDeleteUsersMutation,
+  useAddUsersMutation,
+  useUpdateUsersMutation,
+} = usersApiSlice;
