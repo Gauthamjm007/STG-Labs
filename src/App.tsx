@@ -1,10 +1,10 @@
-import { Users } from "./store/users/Users";
+import UsersPage from "./page/users";
 
 function App() {
   return (
-    <div>
-      <Users />
-    </div>
+    <>
+      <UsersPage />
+    </>
   );
 }
 

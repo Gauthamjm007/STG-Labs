@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { BASE_URL } from "../../constants";
 
 export interface UsersApiResponse {
   createdAt: string;
@@ -21,7 +22,7 @@ export interface User {
 
 export const usersApiSlice = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://660160fd87c91a11641ab523.mockapi.io/users",
+    baseUrl: BASE_URL,
   }),
   reducerPath: "usersApi",
   tagTypes: ["Users"],
@@ -35,7 +36,7 @@ export const usersApiSlice = createApi({
     }),
     getUser: build.query<UsersApiResponse, number>({
       query: (userId = 1) => `/${userId}`,
-      providesTags: (result, error, arg) => [{ type: "Users", id: arg }],
+      providesTags: (_result, _error, arg) => [{ type: "Users", id: arg }],
     }),
     addUsers: build.mutation<UsersApiResponse, UsersApiResponse>({
       query: (data) => ({
@@ -50,7 +51,7 @@ export const usersApiSlice = createApi({
         url: `/${userId}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Users", id: arg }],
+      invalidatesTags: (_result, _error, arg) => [{ type: "Users", id: arg }],
     }),
     updateUsers: build.mutation<UsersApiResponse, UsersApiResponse>({
       query: (data) => ({
@@ -58,7 +59,9 @@ export const usersApiSlice = createApi({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Users", id: arg.id }],
+      invalidatesTags: (_result, _error, arg) => [
+        { type: "Users", id: arg.id },
+      ],
     }),
   }),
 });
