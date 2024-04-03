@@ -39,4 +39,4 @@ pnpm run build && pnpm run preview
 
 #### Preview
 
-![](preview.mov)
+![](preview.gif)
